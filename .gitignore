@@ -1,0 +1,13 @@
+# Build artifacts
+/build
+
+# Cache
+/.cache
+
+# Direnv
+/.direnv
+
+# Config
+!sdkconfig
+!sdkconfig.default
+sdkconfig.old
