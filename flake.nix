@@ -36,10 +36,7 @@
           name = "esp32";
 
           nativeBuildInputs = with pkgs; [
-            clang
             clang-tools
-
-            gnumake
             cmake
             cmake-language-server
           ];
