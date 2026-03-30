@@ -3,19 +3,21 @@ idf := require('idf.py')
 srcs := shell('find . -name "$1" -not \( -path "*/$2/*" \) -print0 | xargs -0', '*.c', 'build')
 include := shell('find . -name "$1" -not \( -path "*/$2/*" \) -print0 | xargs -0', '*.h', 'build')
 
+ccache := 'true'
+_ccache-flag := if ccache == 'true' { '--ccache' } else { '--no-ccache' }
+
 # Show available commands
 default:
     @just -f {{justfile()}} --list
 
 # Build the project
-[arg('no-ccache', long, value='true')]
-build no-ccache="false":
-    @{{idf}} {{ if no-ccache == "true" { "--no-ccache" } else { "--ccache" } }} build
+build:
+    @{{idf}} {{_ccache-flag}} build
 
 # Flash the project
 [arg('port', long)]
-flash port="/dev/ttyUSB0": build
-    @{{idf}} flash -p {{port}}
+flash port="/dev/ttyUSB0":
+    @{{idf}} {{_ccache-flag}} flash -p {{port}}
 
 # Display the serial output
 [arg('port', long)]
@@ -24,11 +26,11 @@ monitor port="/dev/ttyUSB0":
 
 # Show the memory usage
 usage:
-    @{{idf}} size
+    @{{idf}} {{_ccache-flag}} size
 
 # Open the project configuration
 config:
-    @{{idf}} menuconfig
+    @{{idf}} {{_ccache-flag}} menuconfig
 
 # Format source and header files
 format:
