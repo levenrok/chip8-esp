@@ -37,6 +37,7 @@
 
           nativeBuildInputs = with pkgs; [
             clang-tools
+            ccache
             cmake
             cmake-language-server
           ];
