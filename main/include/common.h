@@ -19,4 +19,4 @@ typedef double f64;
 
 typedef size_t usize;
 
-#endif // COMMON_H
+#endif  // COMMON_H

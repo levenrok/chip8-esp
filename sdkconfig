@@ -432,6 +432,14 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# Wi-Fi Configuration for the Server
+#
+CONFIG_SERVER_WIFI_SSID="Espressif"
+CONFIG_SERVER_WIFI_PASS="Esp32"
+CONFIG_SERVER_WIFI_MAXIMUM_RETRY=7
+# end of Wi-Fi Configuration for the Server
+
+#
 # Compiler options
 #
 CONFIG_COMPILER_OPTIMIZATION_DEBUG=y
