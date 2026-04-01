@@ -3,18 +3,22 @@
 #include "nvs_flash.h"
 #include "sdkconfig.h"
 
+#include "esp_check.h"
 #include "esp_err.h"
 #include "esp_event.h"
+#include "esp_http_server.h"
 #include "esp_log.h"
 #include "esp_netif.h"
 #include "esp_wifi.h"
 
 #include "include/common.h"
+#include "include/server.h"
 
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT BIT1
 
 static const char* WIFI_TAG = "wifi";
+static const char* SERVER_TAG = "server";
 
 static EventGroupHandle_t wifi_event_group;
 static i32 wifi_retry_count = 0;
@@ -69,6 +73,16 @@ void app_main(void) {
     if (wifi_event_bits & WIFI_CONNECTED_BIT) {
         ESP_LOGI(WIFI_TAG, "connected to wi-fi.");
     }
+
+    httpd_handle_t server = server_start();
+    ESP_RETURN_VOID_ON_FALSE(server != NULL, SERVER_TAG,
+                             "failed to start the server!");
+
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(200));
+    }
+
+    server_stop(&server);
 }
 
 static void wifi_event_handler(void* arg,
