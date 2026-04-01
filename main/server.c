@@ -6,9 +6,8 @@
 #include "include/server.h"
 
 static const char* TAG = "server";
-static esp_err_t root_uri_handler(httpd_req_t* req) {
-    return httpd_resp_sendstr(req, "Hello, World!");
-}
+
+static esp_err_t root_uri_handler(httpd_req_t* req);
 
 static const httpd_uri_t root_uri = {
     .method = HTTP_GET,
@@ -31,9 +30,6 @@ httpd_handle_t server_start() {
     return NULL;
 }
 
-inline void server_stop(httpd_handle_t* server) {
-    if (*server != NULL) {
-        (void)httpd_stop(*server);
-        *server = NULL;
-    }
+static esp_err_t root_uri_handler(httpd_req_t* req) {
+    return httpd_resp_sendstr(req, "Hello, World!");
 }
