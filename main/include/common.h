@@ -1,5 +1,4 @@
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
 #include <stddef.h>
 #include <stdint.h>
@@ -18,5 +17,3 @@ typedef float f32;
 typedef double f64;
 
 typedef size_t usize;
-
-#endif  // COMMON_H

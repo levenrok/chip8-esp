@@ -21,7 +21,6 @@ static const char* WIFI_TAG = "wifi";
 static const char* SERVER_TAG = "server";
 
 static EventGroupHandle_t wifi_event_group;
-static i32 wifi_retry_count = 0;
 
 static void wifi_event_handler(void* arg,
                                esp_event_base_t event_base,
@@ -43,7 +42,7 @@ void app_main(void) {
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     (void)esp_netif_create_default_wifi_sta();
 
-    wifi_init_config_t init_cfg = WIFI_INIT_CONFIG_DEFAULT();
+    const wifi_init_config_t init_cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&init_cfg));
 
     esp_event_handler_instance_t any_id_instance;
@@ -69,10 +68,9 @@ void app_main(void) {
     EventBits_t wifi_event_bits = xEventGroupWaitBits(
         wifi_event_group, WIFI_CONNECTED_BIT | WIFI_FAIL_BIT, pdFALSE, pdFALSE,
         portMAX_DELAY);
-
-    if (wifi_event_bits & WIFI_CONNECTED_BIT) {
-        ESP_LOGI(WIFI_TAG, "connected to wi-fi.");
-    }
+    ESP_RETURN_VOID_ON_FALSE(wifi_event_bits & WIFI_CONNECTED_BIT, WIFI_TAG,
+                             "failed to connect to wi-fi!");
+    ESP_LOGI(WIFI_TAG, "connected to wi-fi.");
 
     httpd_handle_t server = server_start();
     ESP_RETURN_VOID_ON_FALSE(server != NULL, SERVER_TAG,
@@ -89,6 +87,8 @@ static void wifi_event_handler(void* arg,
                                esp_event_base_t event_base,
                                i32 event_id,
                                void* event_data) {
+    static i32 wifi_retry_count = 0;
+
     if (event_base == WIFI_EVENT) {
         if (event_id == WIFI_EVENT_STA_START) {
             ESP_LOGI(WIFI_TAG, "connecting to wi-fi...");
@@ -101,14 +101,15 @@ static void wifi_event_handler(void* arg,
                          wifi_retry_count);
                 esp_wifi_connect();
             } else {
-                ESP_LOGE(WIFI_TAG, "failed to connect to wi-fi!");
                 xEventGroupSetBits(wifi_event_group, WIFI_FAIL_BIT);
             }
         }
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        ip_event_got_ip_t* ip_data = (ip_event_got_ip_t*)event_data;
+        const ip_event_got_ip_t* ip_data = (ip_event_got_ip_t*)event_data;
         ESP_LOGI(WIFI_TAG, "info => ip: " IPSTR ", gateway: " IPSTR,
                  IP2STR(&ip_data->ip_info.ip), IP2STR(&ip_data->ip_info.gw));
+
+        wifi_retry_count = 0;
         xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
