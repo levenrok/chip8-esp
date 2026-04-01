@@ -11,7 +11,7 @@
 #include "esp_netif.h"
 #include "esp_wifi.h"
 
-#include "include/common.h"
+#include "common.h"
 #include "include/server.h"
 
 #define WIFI_CONNECTED_BIT BIT0

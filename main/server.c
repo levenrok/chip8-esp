@@ -2,7 +2,7 @@
 #include "esp_http_server.h"
 #include "esp_log.h"
 
-#include "include/common.h"
+#include "common.h"
 #include "include/server.h"
 
 static const char* TAG = "server";

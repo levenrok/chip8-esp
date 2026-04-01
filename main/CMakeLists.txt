@@ -1,5 +1,5 @@
 set(srcs
-  "chip-8.c"
+  "main.c"
   "server.c"
 )
 set(requires
@@ -9,6 +9,6 @@ set(requires
 )
 
 idf_component_register(SRCS ${srcs}
-  INCLUDE_DIRS "include"
+  INCLUDE_DIRS "include" "${CMAKE_SOURCE_DIR}/include"
   PRIV_REQUIRES ${requires}
 )
