@@ -1,19 +1,2 @@
-menu "Wi-Fi Configuration for the Server"
-    config SERVER_WIFI_SSID
-        string "Wi-Fi SSID"
-        default "Espressif"
-        help
-            SSID (network name) of the Access Point for the server to connect to.
 
-    config SERVER_WIFI_PASS
-        string "Wi-Fi Password"
-        default "Esp32"
-        help
-            WiFi password (WPA or WPA2) of the Access Point for the server to use.
 
-    config SERVER_WIFI_MAXIMUM_RETRY
-        int "Maximum Wi-Fi Retry Count"
-        default 7
-        help
-            Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
-endmenu
