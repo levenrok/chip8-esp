@@ -11,6 +11,3 @@
 !sdkconfig
 !sdkconfig.default
 sdkconfig.old
-
-# Fixes
-fix*.py

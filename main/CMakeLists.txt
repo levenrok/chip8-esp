@@ -1,9 +1,17 @@
-set(srcs
-  "main.c"
+idf_component_register(
+  SRCS
+    "main.c"
+  INCLUDE_DIRS
+    "include"
+    "${CMAKE_SOURCE_DIR}/include"
 )
-set(requires)
 
-idf_component_register(SRCS ${srcs}
-  INCLUDE_DIRS "include" "${CMAKE_SOURCE_DIR}/include"
-  PRIV_REQUIRES ${requires}
+target_compile_options(${COMPONENT_LIB}
+  PRIVATE
+    "-fanalyzer"
+    "-Wanalyzer-symbol-too-complex"
+    "-Wanalyzer-too-complex"
+    "-Wall"
+    "-Werror"
+    "-Wextra"
 )
