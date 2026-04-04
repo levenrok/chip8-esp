@@ -1,5 +1,6 @@
 idf_component_register(
   SRCS
+    "core.c"
     "rom.c"
   INCLUDE_DIRS
     "include"
