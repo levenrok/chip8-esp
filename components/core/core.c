@@ -68,6 +68,90 @@ err:
     return (Core){0};
 }
 
+static inline void core_increment(Core* self) {
+    self->pc += 2;
+}
+
+void core_cycle(Core* self) {
+    self->opcode = self->memory[self->pc] << 8 | self->memory[self->pc + 1];
+
+    ESP_COMPILER_DIAGNOSTIC_PUSH_IGNORE("-Wanalyzer-symbol-too-complex")
+    const u8 instruction = (self->opcode & 0xF000) >> 12;
+    const u16 nnn = self->opcode & 0x0FFF;
+    const u8 x = (self->opcode & 0x0F00) >> 8;
+    const u8 y = (self->opcode & 0x00F0) >> 4;
+    const u8 kk = self->opcode & 0x00FF;
+    ESP_COMPILER_DIAGNOSTIC_POP()
+
+    const u8 vx = self->v[x];
+    const u8 vy = self->v[y];
+
+    ESP_LOGI(TAG, "instruction: 0x%02X, opcode: 0x%04X, counter: 0x%04X",
+             instruction, self->opcode, self->pc);
+
+    switch (instruction) {
+        case 0x0:
+            if (kk == 0xE0) {
+                (void)memset(self->graphics, 0, GRAPHICS_SIZE);
+            } else if (kk == 0xEE) {
+                self->pc = self->stack[self->sp];
+                self->sp -= 1;
+            }
+            core_increment(self);
+            break;
+
+        case 0x1:
+            self->pc = nnn;
+            break;
+
+        case 0x2:
+            self->sp += 1;
+            self->stack[self->sp] = self->pc;
+            self->pc = nnn;
+            break;
+
+        case 0x3:
+            if (vx == kk)
+                core_increment(self);
+
+            core_increment(self);
+            break;
+
+        case 0x4:
+            if (vx != kk)
+                core_increment(self);
+
+            core_increment(self);
+            break;
+
+        case 0x5:
+            if (vx == vy)
+                core_increment(self);
+
+            core_increment(self);
+            break;
+
+        case 0x6:
+            self->v[x] = kk;
+            core_increment(self);
+            break;
+
+        case 0x7:
+            self->v[x] = vx + kk;
+            core_increment(self);
+            break;
+
+        default:
+            goto unknown;
+    }
+
+    return;
+
+unknown:
+    ESP_LOGE(TAG, "unknown instruction! (0x%X)", instruction);
+    return;
+}
+
 void core_deinit(Core* self) {
     if (self->memory != NULL) {
         (void)free(self->memory);

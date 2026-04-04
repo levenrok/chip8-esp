@@ -20,6 +20,7 @@ typedef struct {
 } Core;
 
 Core core_init(const Rom* rom);
+void core_cycle(Core* self);
 void core_deinit(Core* self);
 
 static inline bool core_check(const Core* self) {
