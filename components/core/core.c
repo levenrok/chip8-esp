@@ -78,6 +78,7 @@ void core_cycle(Core* self) {
     ESP_COMPILER_DIAGNOSTIC_PUSH_IGNORE("-Wanalyzer-symbol-too-complex")
     const u8 instruction = (self->opcode & 0xF000) >> 12;
     const u16 nnn = self->opcode & 0x0FFF;
+    const u8 n = self->opcode & 0x000F;
     const u8 x = (self->opcode & 0x0F00) >> 8;
     const u8 y = (self->opcode & 0x00F0) >> 4;
     const u8 kk = self->opcode & 0x00FF;
@@ -140,6 +141,58 @@ void core_cycle(Core* self) {
             self->v[x] = vx + kk;
             core_increment(self);
             break;
+
+        case 0x8: {
+            switch (n) {
+                case 0x0:
+                    self->v[x] = vy;
+                    break;
+
+                case 0x1:
+                    self->v[x] |= vy;
+                    break;
+
+                case 0x2:
+                    self->v[x] &= vy;
+                    break;
+
+                case 0x3:
+                    self->v[x] ^= vy;
+                    break;
+
+                case 0x4: {
+                    u8 result = 0;
+                    bool overflowing = __builtin_add_overflow(vx, vy, &result);
+
+                    self->v[0xF] = overflowing ? 1 : 0;
+                    self->v[x] = result;
+                } break;
+
+                case 0x5:
+                    self->v[0xF] = vx > vy ? 1 : 0;
+                    self->v[x] -= vy;
+                    break;
+
+                case 0x6:
+                    self->v[0xF] = vx << 1 == 1 ? 1 : 0;
+                    self->v[x] /= 2;
+                    break;
+
+                case 0x7:
+                    self->v[0xF] = vy > vx ? 1 : 0;
+                    self->v[x] = vy - vx;
+                    break;
+
+                case 0xE:
+                    self->v[0xF] = vx >> 1 == 1 ? 1 : 0;
+                    self->v[x] *= 2;
+                    break;
+
+                default:
+                    goto unknown;
+            }
+            core_increment(self);
+        } break;
 
         default:
             goto unknown;
