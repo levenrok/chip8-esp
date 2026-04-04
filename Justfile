@@ -1,4 +1,5 @@
 idf := require('idf.py')
+check := require('cppcheck')
 
 srcs := shell('find . -name "$1" -not \( -path "*/$2/*" \) -print0 | xargs -0', '*.c', 'build')
 include := shell('find . -name "$1" -not \( -path "*/$2/*" \) -print0 | xargs -0', '*.h', 'build')
@@ -31,6 +32,16 @@ usage:
 # Open the project configuration
 config:
     @{{idf}} {{_ccache-flag}} menuconfig
+
+# Run the static analyzer
+check:
+    @{{check}} --project=build/compile_commands.json \
+    --enable=warning,performance,portability \
+    --check-level=exhaustive \
+    --inline-suppr \
+    --suppress=missingIncludeSystem \
+    --error-exitcode=1 \
+    -i $IDF_PATH
 
 # Format source and header files
 format:
