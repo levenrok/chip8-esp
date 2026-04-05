@@ -1,8 +1,8 @@
 idf := require('idf.py')
 check := require('cppcheck')
 
-srcs := shell('find . -name "$1" -not \( -path "*/$2/*" \) -print0 | xargs -0', '*.c', 'build')
-include := shell('find . -name "$1" -not \( -path "*/$2/*" \) -print0 | xargs -0', '*.h', 'build')
+srcs := shell('find . -type f \( -name "$1" -o -name "$2" \) -not \( -path "*/$3/*" \) -print0 | xargs -0', '*.c', '*.cpp', 'build')
+include := shell('find . -type f \( -name "$1" -o -name "$2" \) -not \( -path "*/$3/*" \) -print0 | xargs -0', '*.h', '*.hpp', 'build')
 
 ccache := 'true'
 _ccache-flag := if ccache == 'true' { '--ccache' } else { '--no-ccache' }
@@ -39,7 +39,7 @@ check:
     --enable=warning,performance,portability \
     --check-level=exhaustive \
     --inline-suppr \
-    --suppress=missingIncludeSystem \
+    --suppressions-list=.suppressions \
     --error-exitcode=1 \
     -i $IDF_PATH
 
