@@ -26,7 +26,11 @@ class Core {
     Core(void);
     ~Core(void);
 
+    [[nodiscard("must check if the core initialized successfully")]]
     bool check(Core* const core);
+
+    [[nodiscard("must check if the rom loaded successfully")]]
     bool load(const char* name, const u8* data, usize size);
+
     void cycle(void);
 };

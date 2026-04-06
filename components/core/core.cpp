@@ -30,9 +30,9 @@ Core::Core(void) {
     ESP_LOGI(TAG, "initializing emulator core...");
 
     memory = static_cast<u8*>(
-        heap_caps_calloc(4096, sizeof(u8), MALLOC_CAP_DEFAULT));
-    graphics =
-        static_cast<u8*>(heap_caps_calloc(64 * 32, sizeof(u8), MALLOC_CAP_DMA));
+        heap_caps_calloc(MEMORY_SIZE, sizeof(u8), MALLOC_CAP_DEFAULT));
+    graphics = static_cast<u8*>(
+        heap_caps_calloc(GRAPHICS_SIZE, sizeof(u8), MALLOC_CAP_DMA));
 
     (void)memset(v, 0, sizeof(v));
     (void)memset(stack, 0, sizeof(stack));
@@ -47,8 +47,13 @@ Core::Core(void) {
 }
 
 Core::~Core(void) {
-    heap_caps_free(memory);
-    heap_caps_free(graphics);
+    if (memory != NULL) {
+        heap_caps_free(memory);
+        memory = NULL;
+    } else if (graphics != NULL) {
+        heap_caps_free(graphics);
+        graphics = NULL;
+    }
 }
 
 bool Core::check(Core* const core) {
@@ -119,21 +124,18 @@ void Core::cycle(void) {
         case 0x3:
             if (vx == kk)
                 increment();
-
             increment();
             break;
 
         case 0x4:
             if (vx != kk)
                 increment();
-
             increment();
             break;
 
         case 0x5:
             if (vx == vy)
                 increment();
-
             increment();
             break;
 
@@ -202,6 +204,7 @@ void Core::cycle(void) {
         case 0x9:
             if (vx != vy)
                 increment();
+            increment();
             break;
 
         case 0xA:
