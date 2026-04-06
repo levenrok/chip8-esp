@@ -1,6 +1,5 @@
 #include <string.h>
 
-#include "esp_compiler.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 
@@ -85,14 +84,12 @@ bool Core::load(const char* name, const u8* data, usize size) {
 void Core::cycle(void) {
     opcode = memory[pc] << 8 | memory[pc + 1];
 
-    ESP_COMPILER_DIAGNOSTIC_PUSH_IGNORE("-Wanalyzer-symbol-too-complex")
     const u8 instruction = (opcode & 0xF000) >> 12;
     const u16 nnn = opcode & 0x0FFF;
     const u8 n = opcode & 0x000F;
     const u8 x = (opcode & 0x0F00) >> 8;
     const u8 y = (opcode & 0x00F0) >> 4;
     const u8 kk = opcode & 0x00FF;
-    ESP_COMPILER_DIAGNOSTIC_POP();
 
     const u8 vx = v[x];
     const u8 vy = v[y];

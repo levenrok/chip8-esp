@@ -10,8 +10,6 @@ idf_component_register(
 target_compile_options(${COMPONENT_LIB}
   PRIVATE
     "-fanalyzer"
-    "-Wanalyzer-symbol-too-complex"
-    "-Wanalyzer-too-complex"
     "-Wall"
     "-Werror"
     "-Wextra"
