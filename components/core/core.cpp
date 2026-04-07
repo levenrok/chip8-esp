@@ -55,8 +55,8 @@ Core::~Core(void) {
     }
 }
 
-bool Core::check(Core* const core) {
-    if (core->memory == NULL || core->graphics == NULL) {
+bool Core::check(void) {
+    if (memory == NULL || graphics == NULL) {
         ESP_LOGE(TAG, "failed to initialize the core!");
         return false;
     }
