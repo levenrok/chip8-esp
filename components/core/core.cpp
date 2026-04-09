@@ -1,7 +1,8 @@
-#include <string.h>
+#include <cstring>
 
 #include "esp_heap_caps.h"
 #include "esp_log.h"
+#include "esp_random.h"
 
 #include "include/core.hpp"
 
@@ -83,6 +84,8 @@ bool Core::load(const char* name, const u8* data, usize size) {
 
 void Core::cycle(void) {
     opcode = memory[pc] << 8 | memory[pc + 1];
+
+    const u8 random_byte = esp_random() % 255;
 
     const u8 instruction = (opcode & 0xF000) >> 12;
     const u16 nnn = opcode & 0x0FFF;
@@ -211,6 +214,46 @@ void Core::cycle(void) {
 
         case 0xB:
             pc = nnn + v[0x0];
+            break;
+
+        case 0xC:
+            v[x] = random_byte & kk;
+            increment();
+            break;
+
+        case 0xD: {
+            v[0xF] = 0;
+
+            for (usize line_y = 0; line_y < n; line_y++) {
+                const u8 pixel = memory[i + line_y];
+
+                for (usize line_x = 0; line_x < 8; line_x++) {
+                    const u8 msb = 0x80;
+
+                    if ((pixel & (msb >> line_x)) != 0) {
+                        const u8 index_x = (vx + static_cast<u8>(line_x)) % 64;
+                        const u8 index_y = (vy + static_cast<u8>(line_y)) % 32;
+
+                        const u8 index = index_x + index_y * 64;
+
+                        if (graphics[index] == 0)
+                            v[0xF] = 1;
+
+                        graphics[index] ^= 1;
+                    }
+                }
+            }
+
+            increment();
+        } break;
+
+        case 0xE:
+            if (kk == 0x9E && keys[vx] == 1) {
+                increment();
+            } else if (kk == 0xA1 && keys[vx] != 1) {
+                increment();
+            }
+            increment();
             break;
 
         default:
