@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common.h"
+#include "types.h"
 
 constexpr usize MEMORY_SIZE = 4096;
 constexpr usize GRAPHICS_SIZE = 64 * 32;
