@@ -6,10 +6,4 @@ idf_component_register(
     "${CMAKE_SOURCE_DIR}/include"
 )
 
-target_compile_options(${COMPONENT_LIB}
-  PRIVATE
-    "-fanalyzer"
-    "-Wall"
-    "-Werror"
-    "-Wextra"
-)
+include("${CMAKE_SOURCE_DIR}/options.cmake")
