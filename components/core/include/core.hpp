@@ -9,14 +9,14 @@ constexpr usize MAX_ROM_SIZE = 4096 - 512;
 
 class Core {
     u8* memory;
-    u8 v[16];
+    u8* graphics;
+    u16 stack[16];
     u16 i;
     u16 opcode;
     u16 pc;
-    u16 stack[16];
     u16 sp;
+    u8 v[16];
     u8 keys[16];
-    u8* graphics;
     u8 delay_timer;
     u8 sound_timer;
 
