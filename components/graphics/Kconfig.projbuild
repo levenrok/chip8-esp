@@ -1,0 +1,34 @@
+menu "Graphics Configuration"
+    config I2C_PIN_SDA
+        int "SDA pin GPIO number"
+        default 21
+
+    config I2C_PIN_SCL
+        int "SCL pin GPIO number"
+        default 22
+
+    config I2C_HW_ADDRESS
+        hex "I2C device hardware address"
+        default 0x3C
+
+    config I2C_CLK_SPEED_HZ
+        int "I2C device clock speed in hertz"
+        default 400000
+
+    config DISPLAY_CMD_BITS
+        int "Display's command bit number"
+        default 8
+
+    config DISPLAY_PARAM_BITS
+        int "Display's parameter bit number"
+        default 8
+
+    config DISPLAY_H_RES
+        int "Display's horizontal resolution"
+        default 128
+
+    config DISPLAY_V_RES
+        int "Display's vertical resolution"
+        default 64
+
+endmenu
