@@ -1,5 +1,6 @@
 idf := require('idf.py')
 check := require('cppcheck')
+format := require('clang-format')
 
 srcs := shell('find . -type f \( -name "$1" -o -name "$2" \) -not \( -path "*/$3/*" \) -print0 | xargs -0', '*.c', '*.cpp', 'build')
 include := shell('find . -type f \( -name "$1" -o -name "$2" \) -not \( -path "*/$3/*" \) -print0 | xargs -0', '*.h', '*.hpp', 'build')
@@ -49,13 +50,13 @@ check:
 
 # Format source and header files
 format:
-    clang-format -i {{ srcs }}
-    clang-format -i {{ include }}
+    {{ format }} -i {{ srcs }}
+    {{ format }} -i {{ include }}
 
 # Check for formatting in source and header files
 format-check:
-    clang-format --dry-run -Werror {{ srcs }}
-    clang-format --dry-run -Werror {{ include }}
+    {{ format }} --dry-run -Werror {{ srcs }}
+    {{ format }} --dry-run -Werror {{ include }}
 
 # Remove the build artifacts
 clean:
