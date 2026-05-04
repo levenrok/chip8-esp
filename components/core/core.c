@@ -349,6 +349,10 @@ unknown:
     return false;
 }
 
+u8* Core_Graphics(CoreHandle self) {
+    return self->graphics;
+}
+
 void Core_Deinit(CoreHandle self) {
     if (self != NULL) {
         if (self->memory != NULL) {

@@ -15,4 +15,5 @@ typedef struct Core* CoreHandle;
 CoreHandle Core_Init(void);
 bool Core_Load(CoreHandle self, const char* name, const u8* data, usize size);
 bool Core_Cycle(CoreHandle self);
+u8* Core_Graphics(CoreHandle self);
 void Core_Deinit(CoreHandle self);
