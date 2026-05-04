@@ -1,6 +1,6 @@
 idf_component_register(
   SRCS
-    "core.cpp"
+    "core.c"
   INCLUDE_DIRS
     "include"
     "${CMAKE_SOURCE_DIR}/include"
