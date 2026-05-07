@@ -6,7 +6,6 @@
 
 #include "core.h"
 #include "graphics.h"
-
 #include "rom.h"
 
 void app_main() {

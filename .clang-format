@@ -2,6 +2,23 @@
 BasedOnStyle: Chromium
 IndentWidth: 4
 ColumnLimit: 80
-AccessModifierOffset: -2
-InsertNewlineAtEOF: true
 
+AccessModifierOffset: -2
+SortIncludes: CaseSensitive
+IncludeCategories:
+    - Regex:        '^<.*\.h>'
+      Priority:     1
+    - Regex:        '^"(freertos/.*|driver/.*)\.h"'
+      Priority:     2
+    - Regex:        '^"sdkconfig\.h"'
+      Priority:     2
+    - Regex:        '^"(esp.*)\.h"'
+      Priority:     3
+    - Regex:        '^"(include/.*)\.h"'
+      Priority:     4
+    - Regex:        '^"(.*)\.h"'
+      Priority:     5
+IncludeIsMainRegex: '$^'
+IncludeBlocks: Regroup
+
+InsertNewlineAtEOF: true
