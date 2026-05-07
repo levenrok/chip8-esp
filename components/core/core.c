@@ -53,7 +53,7 @@ static const u8 FONT_SET[] = {
 static Object core_pool[MAX_CORES];
 
 void core_increment(Core* self) {
-    self->pc += 2;
+    self->pc += 2U;
 }
 
 ptrdiff_t object_index(CoreHandle handle) {
@@ -86,7 +86,7 @@ CoreHandle Core_Init(void) {
         return NULL;
     }
 
-    core->pc = 0x0200;
+    core->pc = 0x0200U;
 
     core_pool[0].allocated = true;
 
@@ -125,16 +125,17 @@ bool Core_Cycle(CoreHandle self) {
         return false;
     }
 
-    self->opcode = self->memory[self->pc] << 8 | self->memory[self->pc + 1];
+    self->opcode =
+        (u16)(self->memory[self->pc] << 8U) | self->memory[self->pc + 1U];
 
-    const u8 random_byte = esp_random() % 255;
+    const u8 random_byte = (u8)esp_random();
 
-    const u8 instruction = (self->opcode & 0xF000) >> 12;
-    const u16 nnn = self->opcode & 0x0FFF;
-    const u8 n = self->opcode & 0x000F;
-    const u8 x = (self->opcode & 0x0F00) >> 8;
-    const u8 y = (self->opcode & 0x00F0) >> 4;
-    const u8 kk = self->opcode & 0x00FF;
+    const u8 instruction = (self->opcode & 0xF000U) >> 12U;
+    const u16 nnn = self->opcode & 0x0FFFU;
+    const u8 n = self->opcode & 0x000FU;
+    const u8 x = (self->opcode & 0x0F00U) >> 8U;
+    const u8 y = (self->opcode & 0x00F0U) >> 4U;
+    const u8 kk = self->opcode & 0x00FFU;
 
     const u8 vx = self->v[x];
     const u8 vy = self->v[y];
@@ -148,7 +149,7 @@ bool Core_Cycle(CoreHandle self) {
                 (void)memset(self->graphics, 0, GRAPHICS_SIZE);
             } else if (kk == 0xEE) {
                 self->pc = self->stack[self->sp];
-                self->sp -= 1;
+                self->sp -= 1U;
             }
             core_increment(self);
             break;
@@ -158,7 +159,7 @@ bool Core_Cycle(CoreHandle self) {
             break;
 
         case 0x2:
-            self->sp += 1;
+            self->sp += 1U;
             self->stack[self->sp] = self->pc;
             self->pc = nnn;
             break;
@@ -224,7 +225,7 @@ bool Core_Cycle(CoreHandle self) {
 
                 case 0x6:
                     self->v[0xF] = vx << 1 == 1 ? 1 : 0;
-                    self->v[x] /= 2;
+                    self->v[x] /= 2U;
                     break;
 
                 case 0x7:
@@ -282,7 +283,7 @@ bool Core_Cycle(CoreHandle self) {
                         if (self->graphics[index] == 0)
                             self->v[0xF] = 1;
 
-                        self->graphics[index] ^= 1;
+                        self->graphics[index] ^= 1U;
                     }
                 }
             }
@@ -319,8 +320,8 @@ bool Core_Cycle(CoreHandle self) {
 
                 case 0x33:
                     self->memory[self->i] = self->v[x] / 100;
-                    self->memory[self->i + 1] = (self->v[x] / 10) % 10;
-                    self->memory[self->i + 2] = self->v[x] % 10;
+                    self->memory[self->i + 1U] = (self->v[x] / 10) % 10;
+                    self->memory[self->i + 2U] = self->v[x] % 10;
                     break;
 
                 case 0x55:
