@@ -59,7 +59,7 @@ esp_lcd_panel_handle_t graphics_init(void) {
     return panel_handle;
 }
 
-void graphics_render(esp_lcd_panel_handle_t handle, u8* buffer) {
+void graphics_render(esp_lcd_panel_handle_t handle, const u8* restrict buffer) {
     static u8 packed_buffer[GRAPHICS_WIDTH * GRAPHICS_HEIGHT / 8];
     (void)memset(packed_buffer, 0, sizeof(packed_buffer));
 

@@ -8,4 +8,4 @@
 #define GRAPHICS_HEIGHT 32
 
 esp_lcd_panel_handle_t graphics_init(void);
-void graphics_render(esp_lcd_panel_handle_t handle, u8* buffer);
+void graphics_render(esp_lcd_panel_handle_t handle, const u8* restrict buffer);
